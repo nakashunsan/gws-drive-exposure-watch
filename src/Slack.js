@@ -66,38 +66,40 @@ function postExposure_(webhookUrl, x) {
 /** 検知イベントの通知メッセージ（Block Kit）を組み立てる。 */
 function buildExposureMessage_(x) {
   const emoji = x.newVisibility === 'public_on_the_web' ? ':rotating_light:' : ':warning:';
-  const kind = x.docType === 'folder' ? 'フォルダ' : 'ファイル';
+  const isFolder = x.docType === 'folder';
+  const kind = isFolder ? 'フォルダ' : 'ファイル';
   const title = truncate_(x.docTitle || '(名称不明)', 200);
   const url = 'https://drive.google.com/open?id=' + encodeURIComponent(x.docId);
-  const summary = `Drive の${kind}が「${visibilityLabel_(x.newVisibility)}」に変更されました: ${escapeMrkdwn_(title)}`;
+  const oldLabel = x.oldVisibility ? shortVisibilityLabel_(x.oldVisibility) : '不明';
+  const newLabel = shortVisibilityLabel_(x.newVisibility);
+  const summary = `Drive の${kind}が「${newLabel}」に変更されました: ${escapeMrkdwn_(title)}`;
 
-  const fields = [
-    field_('種別', x.docType === 'folder' ? 'フォルダ' : `ファイル（${x.docType || '種類不明'}）`),
-    field_('保存場所', x.ownerIsSharedDrive ? '共有ドライブ' : 'マイドライブ'),
-    field_(x.ownerIsSharedDrive ? 'オーナー（共有ドライブ名）' : 'オーナー', x.owner || '不明'),
-    field_('操作したユーザー', x.actor || '不明'),
-    field_('変更前の公開範囲', x.oldVisibility ? visibilityLabel_(x.oldVisibility) : '不明'),
-    field_('変更後の公開範囲', visibilityLabel_(x.newVisibility)),
-    field_('発生時刻', formatTime_(x.timeMs)),
+  // 1 行目に「何がどう変わったか」、2 行目に対象。補足は小さい文字でまとめる。
+  const details = [
+    `${isFolder ? ':file_folder:' : ':page_facing_up:'} ${kind}`,
+    x.ownerIsSharedDrive ? '共有ドライブ' : 'マイドライブ',
+    formatTime_(x.timeMs),
   ];
-  if (x.target) fields.push(field_('共有先', x.target));
+  if (x.target) details.push(`共有先: ${escapeMrkdwn_(truncate_(x.target, 200))}`);
 
   return {
     text: summary,
     blocks: [
       {
-        type: 'header',
-        text: { type: 'plain_text', text: truncate_(`${emoji} Drive の公開範囲の変更を検知しました`, 150), emoji: true },
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `${emoji} ${oldLabel} → *${newLabel}*\n*<${url}|${escapeMrkdwn_(title)}>*`,
+        },
       },
       {
         type: 'section',
-        text: { type: 'mrkdwn', text: `*<${url}|${escapeMrkdwn_(title)}>*` },
+        fields: [
+          field_('操作したユーザー', x.actor || '不明'),
+          field_(x.ownerIsSharedDrive ? 'オーナー（共有ドライブ）' : 'オーナー', x.owner || '不明'),
+        ],
       },
-      { type: 'section', fields: fields },
-      {
-        type: 'context',
-        elements: [{ type: 'mrkdwn', text: `イベント: \`${x.eventName}\` ／ ファイル ID: \`${escapeMrkdwn_(x.docId)}\`` }],
-      },
+      { type: 'context', elements: [{ type: 'mrkdwn', text: details.join('  ・  ') }] },
     ],
   };
 }
@@ -153,8 +155,8 @@ function field_(label, value) {
   return { type: 'mrkdwn', text: `*${label}*\n${escapeMrkdwn_(truncate_(String(value), 300))}` };
 }
 
-function visibilityLabel_(v) {
-  return VISIBILITY_LABELS[v] ? `${VISIBILITY_LABELS[v]}（${v}）` : v;
+function shortVisibilityLabel_(v) {
+  return VISIBILITY_LABELS[v] || v;
 }
 
 function escapeMrkdwn_(s) {
@@ -166,5 +168,5 @@ function truncate_(s, max) {
 }
 
 function formatTime_(ms) {
-  return Utilities.formatDate(new Date(ms), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm:ss (z)');
+  return Utilities.formatDate(new Date(ms), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm');
 }
