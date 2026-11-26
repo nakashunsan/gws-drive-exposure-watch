@@ -50,7 +50,8 @@ function extractExposures_(activity) {
       ownerIsSharedDrive: p.owner_is_shared_drive === true || p.owner_is_shared_drive === 'true' || Boolean(p.shared_drive_id),
       oldVisibility: p.old_visibility || '',
       newVisibility: p.visibility,
-      target: p.target_user || p.target_domain || '',
+      // target_domain は変更前の共有範囲のドメインが入ることがあり紛らわしいため、共有相手（target_user）だけを使う。
+      target: p.target_user || '',
     });
   }
   return results;
