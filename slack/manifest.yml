@@ -1,0 +1,19 @@
+# Slack App のマニフェスト。
+# https://api.slack.com/apps →［Create New App］→［From a manifest］に貼り付けて使う。
+# 必要なのは Incoming Webhook だけなので、権限は incoming-webhook のみ。
+display_information:
+  name: Drive Exposure Watch
+  description: Google Drive の公開範囲の変更を検知して通知します
+  background_color: "#1a73e8"
+features:
+  bot_user:
+    display_name: Drive Exposure Watch
+    always_online: false
+oauth_config:
+  scopes:
+    bot:
+      - incoming-webhook
+settings:
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

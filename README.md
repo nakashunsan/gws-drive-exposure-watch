@@ -83,7 +83,15 @@ clasp push -f
 
 `.clasp.json` と認証情報の `.clasprc.json` は、環境ごとに異なるため `.gitignore` で除外しています。
 
-### 3. スクリプト プロパティの設定
+### 3. Slack App の作成と Webhook URL の取得
+
+1. <https://api.slack.com/apps> →［Create New App］→［From a manifest］を選び、[`slack/manifest.yml`](slack/manifest.yml) の内容を貼り付けて作成する
+2. ［Install to Workspace］でインストールし、通知先のチャンネルを選ぶ
+3. ［Incoming Webhooks］に表示される Webhook URL を控える
+
+App に付与する権限は `incoming-webhook`（選んだチャンネルへの投稿）だけです。
+
+### 4. スクリプト プロパティの設定
 
 スクリプト エディタ（`clasp open-script`）の［プロジェクトの設定］→［スクリプト プロパティ］に次を追加します。
 
@@ -93,7 +101,7 @@ clasp push -f
 
 Webhook URL はコードには書かず、ここから読み込みます。
 
-### 4. 動作確認とトリガーの作成
+### 5. 動作確認とトリガーの作成
 
 スクリプト エディタで、次の関数を順に実行します。初回は権限の承認画面が出ます。
 
