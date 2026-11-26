@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2b7de9"/>
+      <stop offset="1" stop-color="#174ea6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <!-- フォルダ -->
+  <path fill="#ffffff" d="M192 372q0-48 48-48h176q22 0 38 16l44 44h286q48 0 48 48v300q0 48-48 48H240q-48 0-48-48Z"/>
+  <!-- 目（見張り） -->
+  <path fill="#1a5fc4" d="M336 590Q512 436 688 590Q512 744 336 590Z"/>
+  <circle cx="512" cy="590" r="58" fill="#ffffff"/>
+  <circle cx="512" cy="590" r="26" fill="#1a5fc4"/>
+  <!-- 警告バッジ -->
+  <circle cx="800" cy="336" r="104" fill="#174ea6"/>
+  <circle cx="800" cy="336" r="84" fill="#fbbc04"/>
+  <rect x="786" y="280" width="28" height="74" rx="14" fill="#3c2f00"/>
+  <circle cx="800" cy="384" r="16" fill="#3c2f00"/>
+</svg>

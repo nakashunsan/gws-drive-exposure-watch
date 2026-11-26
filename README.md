@@ -91,6 +91,8 @@ clasp push -f
 
 App に付与する権限は `incoming-webhook`（選んだチャンネルへの投稿）だけです。
 
+App のアイコンには [`slack/icon.png`](slack/icon.png) を使えます（［Basic Information］→［Display Information］で設定）。
+
 ### 4. スクリプト プロパティの設定
 
 スクリプト エディタ（`clasp open-script`）の［プロジェクトの設定］→［スクリプト プロパティ］に次を追加します。
